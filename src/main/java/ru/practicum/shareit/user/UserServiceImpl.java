@@ -56,8 +56,6 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + id + " не найден"));
 
-        UserMapper.updateUserFields(existingUser, userDto);
-
         if (userDto.getEmail() != null && !userDto.getEmail().isBlank()) {
             if (!existingUser.getEmail().equals(userDto.getEmail())
                     && userRepository.existsByEmail(userDto.getEmail())) {
@@ -65,6 +63,8 @@ public class UserServiceImpl implements UserService {
             }
             existingUser.setEmail(userDto.getEmail());
         }
+
+        UserMapper.updateUserFields(existingUser, userDto);
 
         User updatedUser = userRepository.save(existingUser);
         return UserMapper.toUserDto(updatedUser);
