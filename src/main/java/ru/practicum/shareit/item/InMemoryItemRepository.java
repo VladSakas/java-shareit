@@ -30,12 +30,8 @@ public class InMemoryItemRepository implements ItemRepository {
     public Item save(Item item) {
         if (item.getId() == null) {
             item.setId(nextId++);
-            items.put(item.getId(), item);
-            log.info("Создана вещь с ID: {}", item.getId());
-        } else {
-            items.put(item.getId(), item);
-            log.info("Обновлена вещь с ID: {}", item.getId());
         }
+        items.put(item.getId(), item);
         return item;
     }
 

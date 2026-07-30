@@ -42,13 +42,7 @@ public class ItemServiceImpl implements ItemService {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
 
-        Item item = new Item();
-        item.setName(itemDto.getName());
-        item.setDescription(itemDto.getDescription());
-        item.setAvailable(itemDto.getAvailable());
-        item.setOwner(owner);
-        item.setRequest(null);
-
+        Item item = ItemMapper.toItem(itemDto, owner);
         Item savedItem = itemRepository.save(item);
         return ItemMapper.toItemDto(savedItem);
     }
@@ -64,15 +58,7 @@ public class ItemServiceImpl implements ItemService {
             throw new ForbiddenException("Только владелец может редактировать вещь");
         }
 
-        if (itemDto.getName() != null) {
-            existingItem.setName(itemDto.getName());
-        }
-        if (itemDto.getDescription() != null) {
-            existingItem.setDescription(itemDto.getDescription());
-        }
-        if (itemDto.getAvailable() != null) {
-            existingItem.setAvailable(itemDto.getAvailable());
-        }
+        ItemMapper.updateItemFields(existingItem, itemDto);
 
         Item updatedItem = itemRepository.save(existingItem);
         return ItemMapper.toItemDto(updatedItem);

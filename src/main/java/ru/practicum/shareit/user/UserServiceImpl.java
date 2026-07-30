@@ -44,10 +44,7 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException("Пользователь с таким email уже существует");
         }
 
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-
+        User user = UserMapper.toUser(userDto);
         User savedUser = userRepository.save(user);
         return UserMapper.toUserDto(savedUser);
     }
@@ -59,9 +56,7 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + id + " не найден"));
 
-        if (userDto.getName() != null && !userDto.getName().isBlank()) {
-            existingUser.setName(userDto.getName());
-        }
+        UserMapper.updateUserFields(existingUser, userDto);
 
         if (userDto.getEmail() != null && !userDto.getEmail().isBlank()) {
             if (!existingUser.getEmail().equals(userDto.getEmail())
