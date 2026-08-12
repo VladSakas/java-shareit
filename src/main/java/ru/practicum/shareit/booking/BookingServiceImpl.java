@@ -135,15 +135,29 @@ public class BookingServiceImpl implements BookingService {
 
         LocalDateTime now = LocalDateTime.now();
         String stateUpper = state != null ? state.toUpperCase() : "ALL";
-        List<Booking> bookings = switch (stateUpper) {
-            case "ALL" -> bookingRepository.findByOwnerId(userId);
-            case "CURRENT" -> bookingRepository.findCurrentByOwner(userId, now);
-            case "PAST" -> bookingRepository.findPastByOwner(userId, now);
-            case "FUTURE" -> bookingRepository.findFutureByOwner(userId, now);
-            case "WAITING" -> bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.WAITING);
-            case "REJECTED" -> bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.REJECTED);
-            default -> throw new BadRequestException("Неизвестный статус: " + state);
-        };
+        List<Booking> bookings;
+        switch (stateUpper) {
+            case "ALL":
+                bookings = bookingRepository.findByOwnerId(userId);
+                break;
+            case "CURRENT":
+                bookings = bookingRepository.findCurrentByOwner(userId, now);
+                break;
+            case "PAST":
+                bookings = bookingRepository.findPastByOwner(userId, now);
+                break;
+            case "FUTURE":
+                bookings = bookingRepository.findFutureByOwner(userId, now);
+                break;
+            case "WAITING":
+                bookings = bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.WAITING);
+                break;
+            case "REJECTED":
+                bookings = bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.REJECTED);
+                break;
+            default:
+                throw new BadRequestException("Неизвестный статус: " + state);
+        }
 
         log.info("Получено {} бронирований для владельца {} с фильтром {}", bookings.size(), userId, state);
         return bookings.stream()
