@@ -75,10 +75,8 @@ public class UserServiceImpl implements UserService {
             }
             user.setEmail(userDto.getEmail());
         }
-
-        User updated = userRepository.save(user);
         log.info("Пользователь с id {} обновлён", id);
-        return UserMapper.toUserDto(updated);
+        return UserMapper.toUserDto(user);
     }
 
     @Override

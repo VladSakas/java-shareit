@@ -80,10 +80,8 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) {
             existingItem.setAvailable(itemDto.getAvailable());
         }
-
-        Item updated = itemRepository.save(existingItem);
         log.info("Вещь с id: {} обновлена", itemId);
-        return ItemMapper.toItemDto(updated);
+        return ItemMapper.toItemDto(existingItem);
     }
 
     @Override

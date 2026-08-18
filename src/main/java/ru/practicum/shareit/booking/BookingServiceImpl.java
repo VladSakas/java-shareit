@@ -88,8 +88,7 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         log.info("Статус бронирования {} обновлён на {}", bookingId, booking.getStatus());
-        Booking updatedBooking = bookingRepository.save(booking);
-        return bookingMapper.toDto(updatedBooking);
+        return bookingMapper.toDto(booking);
     }
 
     @Override
