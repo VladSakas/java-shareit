@@ -2,16 +2,40 @@ package ru.practicum.shareit.item;
 
 import ru.practicum.shareit.user.User;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ItemMapper {
-    public static ItemDto toItemDto(Item item) {
+
+    public static ItemDto toItemDto(Item item, List<Comment> comments, LocalDateTime lastBooking, LocalDateTime nextBooking) {
+        if (item == null) {
+            return null;
+        }
+
+        List<CommentDto> commentDtos = comments != null
+                ? comments.stream().map(CommentMapper::toDto).collect(Collectors.toList())
+                : List.of();
+
         return new ItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
                 item.getOwner() != null ? item.getOwner().getId() : null,
-                item.getRequest() != null ? item.getRequest().getId() : null
+                item.getRequestId(),
+                commentDtos,
+                lastBooking,
+                nextBooking
         );
+    }
+
+    public static ItemDto toItemDto(Item item, List<Comment> comments) {
+        return toItemDto(item, comments, null, null);
+    }
+
+    public static ItemDto toItemDto(Item item) {
+        return toItemDto(item, List.of(), null, null);
     }
 
     public static Item toItem(ItemDto dto, User owner) {
@@ -20,19 +44,7 @@ public class ItemMapper {
         item.setDescription(dto.getDescription());
         item.setAvailable(dto.getAvailable());
         item.setOwner(owner);
-        item.setRequest(null);
+        item.setRequestId(dto.getRequestId());
         return item;
-    }
-
-    public static void updateItemFields(Item existing, ItemDto dto) {
-        if (dto.getName() != null) {
-            existing.setName(dto.getName());
-        }
-        if (dto.getDescription() != null) {
-            existing.setDescription(dto.getDescription());
-        }
-        if (dto.getAvailable() != null) {
-            existing.setAvailable(dto.getAvailable());
-        }
     }
 }

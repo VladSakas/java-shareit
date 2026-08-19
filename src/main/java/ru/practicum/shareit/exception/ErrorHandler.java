@@ -61,4 +61,13 @@ public class ErrorHandler {
                 "message", ex.getMessage()
         );
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleBadRequestException(BadRequestException ex) {
+        return Map.of(
+                "error", "Bad Request",
+                "message", ex.getMessage()
+        );
+    }
 }
